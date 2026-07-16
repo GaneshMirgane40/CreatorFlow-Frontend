@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { getMyProjects } from "@/services/projectService";
+import {
+  getMyProjects,
+  deleteProject,
+} from "@/services/projectService";
+
 import CreateProjectModal from "@/components/CreateProjectModal";
 import EditProjectModal from "@/components/EditProjectModal";
 
@@ -9,7 +13,6 @@ export default function Projects() {
   const [error, setError] = useState(null);
 
   const [openModal, setOpenModal] = useState(false);
-
   const [openEditModal, setOpenEditModal] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
 
@@ -34,6 +37,26 @@ export default function Projects() {
   useEffect(() => {
     fetchProjects();
   }, []);
+
+  // ✅ Delete Function
+  const handleDelete = async (projectId) => {
+    const confirmed = window.confirm(
+        "Are you sure you want to delete this project?"
+    );
+
+    if (!confirmed) return;
+
+    try {
+      await deleteProject(projectId);
+      fetchProjects();
+    } catch (err) {
+      alert(
+          err.response?.data?.message ||
+          err.message ||
+          "Failed to delete project"
+      );
+    }
+  };
 
   if (loading) {
     return <div className="p-8">Loading projects...</div>;
@@ -67,7 +90,9 @@ export default function Projects() {
                       key={project.id}
                       className="rounded-lg shadow border border-gray-200 p-6 hover:shadow-lg transition-shadow"
                   >
-                    <h2 className="text-xl font-bold mb-2">{project.title}</h2>
+                    <h2 className="text-xl font-bold mb-2">
+                      {project.title}
+                    </h2>
 
                     <p className="text-gray-600 mb-4">
                       {project.description}
@@ -96,7 +121,7 @@ export default function Projects() {
                     </div>
 
                     {/* Action Buttons */}
-                    <div className="mt-6 flex justify-end">
+                    <div className="mt-6 flex gap-3 justify-end">
                       <button
                           onClick={() => {
                             setSelectedProject(project);
@@ -105,6 +130,13 @@ export default function Projects() {
                           className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition"
                       >
                         Edit
+                      </button>
+
+                      <button
+                          onClick={() => handleDelete(project.id)}
+                          className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
+                      >
+                        Delete
                       </button>
                     </div>
                   </div>
