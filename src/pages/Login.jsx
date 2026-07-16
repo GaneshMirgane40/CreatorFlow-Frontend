@@ -1,4 +1,6 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { login } from "@/services/authService";
 import {
   Card,
   CardHeader,
@@ -12,6 +14,44 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 
 export default function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+
+    try {
+      setLoading(true);
+
+      const response = await login({
+        email,
+        password,
+      });
+
+      // Save authentication data
+      localStorage.setItem("token", response.token);
+      localStorage.setItem("role", response.role);
+
+      console.log("Login Successful");
+
+      // Redirect based on role
+      if (response.role === "CREATOR") {
+        navigate("/creator/dashboard");
+      } else {
+        navigate("/editor/dashboard");
+      }
+
+    } catch (error) {
+      console.error(error.response?.data || error.message);
+      alert("Invalid email or password");
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 px-4 sm:px-6 lg:px-8">
       <div className="w-full max-w-md">
@@ -33,36 +73,46 @@ export default function Login() {
           </CardHeader>
 
           <CardContent className="space-y-6">
-            {/* Email Field */}
-            <div className="space-y-2">
-              <Label htmlFor="email" className="text-slate-200">
-                Email
-              </Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="you@example.com"
-                className="bg-slate-700/50 border-slate-600 text-white placeholder:text-slate-500 focus:border-blue-500 focus:ring-blue-500"
-              />
-            </div>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Email Field */}
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-slate-200">
+                  Email
+                </Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="you@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="bg-slate-700/50 border-slate-600 text-white placeholder:text-slate-500 focus:border-blue-500 focus:ring-blue-500"
+                />
+              </div>
 
-            {/* Password Field */}
-            <div className="space-y-2">
-              <Label htmlFor="password" className="text-slate-200">
-                Password
-              </Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="••••••••"
-                className="bg-slate-700/50 border-slate-600 text-white placeholder:text-slate-500 focus:border-blue-500 focus:ring-blue-500"
-              />
-            </div>
+              {/* Password Field */}
+              <div className="space-y-2">
+                <Label htmlFor="password" className="text-slate-200">
+                  Password
+                </Label>
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="bg-slate-700/50 border-slate-600 text-white placeholder:text-slate-500 focus:border-blue-500 focus:ring-blue-500"
+                />
+              </div>
 
-            {/* Login Button */}
-            <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 h-10">
-              Sign In
-            </Button>
+              {/* Login Button */}
+              <Button
+                type="submit"
+                disabled={loading}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 h-10"
+              >
+                {loading ? "Signing In..." : "Sign In"}
+              </Button>
+            </form>
           </CardContent>
 
           {/* Footer */}
