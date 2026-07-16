@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { login } from "@/services/authService";
+import { useAuth } from "@/context/AuthContext";
 import {
   Card,
   CardHeader,
@@ -19,6 +20,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
+  const { login: loginUser } = useAuth();
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -32,8 +34,7 @@ export default function Login() {
       });
 
       // Save authentication data
-      localStorage.setItem("token", response.token);
-      localStorage.setItem("role", response.role);
+      loginUser(response.token, response.role);
 
       console.log("Login Successful");
 
