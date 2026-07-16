@@ -1,7 +1,10 @@
 export default function CreatorDashboard() {
-  return (
-    <div className="flex items-center justify-center min-h-screen">
-      <h1 className="text-4xl font-bold">CreatorDashboard</h1>
-    </div>
-  );
+    return (
+        <div className="space-y-4">
+            <h1 className="text-3xl font-bold">Creator Dashboard</h1>
+            <p className="text-gray-600">
+                Welcome to CreatorFlow! Manage your projects from the sidebar.
+            </p>
+        </div>
+    );
 }
