@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
+import CreateProjectModal from "@/components/CreateProjectModal";
+import EditProjectModal from "@/components/EditProjectModal";
+import AssignEditorModal from "@/components/AssignEditorModal";
+
 import {
   getMyProjects,
   deleteProject,
 } from "@/services/projectService";
-
-import CreateProjectModal from "@/components/CreateProjectModal";
-import EditProjectModal from "@/components/EditProjectModal";
 
 export default function Projects() {
   const [projects, setProjects] = useState([]);
@@ -14,6 +15,8 @@ export default function Projects() {
 
   const [openModal, setOpenModal] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
+  const [openAssignModal, setOpenAssignModal] = useState(false);
+
   const [selectedProject, setSelectedProject] = useState(null);
 
   const fetchProjects = async () => {
@@ -38,7 +41,6 @@ export default function Projects() {
     fetchProjects();
   }, []);
 
-  // ✅ Delete Function
   const handleDelete = async (projectId) => {
     const confirmed = window.confirm(
         "Are you sure you want to delete this project?"
@@ -121,7 +123,7 @@ export default function Projects() {
                     </div>
 
                     {/* Action Buttons */}
-                    <div className="mt-6 flex gap-3 justify-end">
+                    <div className="mt-6 flex flex-wrap gap-2 justify-end">
                       <button
                           onClick={() => {
                             setSelectedProject(project);
@@ -130,6 +132,16 @@ export default function Projects() {
                           className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition"
                       >
                         Edit
+                      </button>
+
+                      <button
+                          onClick={() => {
+                            setSelectedProject(project);
+                            setOpenAssignModal(true);
+                          }}
+                          className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition"
+                      >
+                        Assign Editor
                       </button>
 
                       <button
@@ -160,6 +172,17 @@ export default function Projects() {
               setSelectedProject(null);
             }}
             onProjectUpdated={fetchProjects}
+        />
+
+        {/* Assign Editor Modal */}
+        <AssignEditorModal
+            open={openAssignModal}
+            project={selectedProject}
+            onClose={() => {
+              setOpenAssignModal(false);
+              setSelectedProject(null);
+            }}
+            onEditorAssigned={fetchProjects}
         />
       </div>
   );

@@ -19,3 +19,8 @@ export async function deleteProject(id) {
   const response = await axios.delete(`/projects/${id}`);
   return response.data;
 }
+
+export async function assignEditor(projectId, editorId) {
+  const response = await axios.put(`/projects/${projectId}/assign-editor/${editorId}`);
+  return response.data;
+}
