@@ -1,6 +1,5 @@
-import React from 'react'
 import { NavLink, Link, useNavigate } from 'react-router-dom'
-import { Home, Folder, UploadCloud, User, LogOut } from 'lucide-react'
+import { Home, Folder, ClipboardCheck, LogOut } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
 
 export default function Sidebar() {
@@ -10,12 +9,17 @@ export default function Sidebar() {
   const dashboardRoute =
     role === 'CREATOR' ? '/creator/dashboard' : '/editor/dashboard'
 
-  const navItems = [
-    { name: 'Dashboard', to: dashboardRoute, icon: Home },
-    { name: 'Projects', to: '/projects', icon: Folder },
-    { name: 'Uploads', to: '/uploads', icon: UploadCloud },
-    { name: 'Profile', to: '/profile', icon: User },
-  ]
+  const navItems =
+    role === 'CREATOR'
+      ? [
+          { name: 'Dashboard', to: dashboardRoute, icon: Home },
+          { name: 'Projects', to: '/projects', icon: Folder },
+          { name: 'Review', to: '/review', icon: ClipboardCheck },
+        ]
+      : [
+          { name: 'Dashboard', to: dashboardRoute, icon: Home },
+          { name: 'My Projects', to: '/editor/projects', icon: Folder },
+        ]
 
   const handleLogout = () => {
     logout()

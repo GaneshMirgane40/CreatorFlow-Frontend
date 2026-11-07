@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { getAllEditors } from '@/services/userService';
 import { assignEditor } from '@/services/projectService';
 

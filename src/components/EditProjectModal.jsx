@@ -1,19 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { updateProject } from '@/services/projectService';
 
+// Rendered with key={project.id}, so the initial state below is per project.
 export default function EditProjectModal({ open, project, onClose, onProjectUpdated }) {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
+  const [title, setTitle] = useState(project?.title || '');
+  const [description, setDescription] = useState(project?.description || '');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-
-  useEffect(() => {
-    if (project) {
-      setTitle(project.title || '');
-      setDescription(project.description || '');
-      setError(null);
-    }
-  }, [project]);
 
   if (!open || !project) return null;
 
