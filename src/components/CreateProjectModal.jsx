@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { createProject } from '@/services/projectService';
 
 export default function CreateProjectModal({ open, onClose, onProjectCreated }) {
@@ -36,7 +36,7 @@ export default function CreateProjectModal({ open, onClose, onProjectCreated }) 
       onProjectCreated();
       handleClose();
     } catch (err) {
-      setError(err.message || 'Failed to create project');
+      setError(err.response?.data?.message || err.message || 'Failed to create project');
     } finally {
       setLoading(false);
     }

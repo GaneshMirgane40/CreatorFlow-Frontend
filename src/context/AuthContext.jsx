@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 
 const AuthContext = createContext(null);
 
@@ -49,7 +49,7 @@ export function AuthProvider({ children }) {
       } else {
         localStorage.removeItem(AUTH_ROLE_KEY);
       }
-    } catch (err) {
+    } catch {
       // localStorage may fail in some environments; still update in-memory state
       // Consider reporting the error to monitoring in real apps
     }
@@ -83,6 +83,7 @@ export function AuthProvider({ children }) {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useAuth() {
   const ctx = useContext(AuthContext);
   if (ctx === null) {

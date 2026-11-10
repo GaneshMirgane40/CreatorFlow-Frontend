@@ -22,4 +22,22 @@ instance.interceptors.request.use(
     (error) => Promise.reject(error)
 );
 
+// An expired/invalid JWT makes every call fail; send the user back to login.
+instance.interceptors.response.use(
+    (response) => response,
+    (error) => {
+      const status = error.response?.status;
+      const hadToken = Boolean(localStorage.getItem("auth_token"));
+      const isAuthCall = error.config?.url?.startsWith("/auth/");
+
+      if (status === 401 && hadToken && !isAuthCall) {
+        localStorage.removeItem("auth_token");
+        localStorage.removeItem("auth_role");
+        window.location.assign("/login");
+      }
+
+      return Promise.reject(error);
+    }
+);
+
 export default instance;

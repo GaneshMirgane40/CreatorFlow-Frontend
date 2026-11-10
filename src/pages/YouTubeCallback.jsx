@@ -1,47 +1,68 @@
 import { useEffect, useRef, useState } from "react";
-import { CheckCircle2, CircleAlert, LoaderCircle, Video } from "lucide-react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { CheckCircle2, Loader2, XCircle } from "lucide-react";
 import { connectYouTubeAccount } from "@/services/youtubeOAuthService";
+import { getErrorMessage } from "@/lib/workflow";
 
+/** Google redirects here with ?code=... after the creator grants YouTube access. */
 export default function YouTubeCallback() {
-  const location = useLocation();
+  const [params] = useSearchParams();
   const navigate = useNavigate();
-  const hasStarted = useRef(false);
-  const [state, setState] = useState({ status: "loading", message: "Connecting your YouTube account…" });
+  const code = params.get("code");
+  const oauthError = params.get("error");
 
-  /* eslint-disable react-hooks/set-state-in-effect */
+  const [result, setResult] = useState(null); // { ok: boolean, message: string }
+  // Authorization codes are single-use; StrictMode runs effects twice in dev.
+  const exchanged = useRef(false);
+
   useEffect(() => {
-    if (hasStarted.current) return;
-    hasStarted.current = true;
+    if (oauthError || !code || exchanged.current) return undefined;
+    exchanged.current = true;
 
-    const params = new URLSearchParams(location.search);
-    const code = params.get("code");
-    const oauthError = params.get("error");
-
-    if (oauthError) {
-      setState({ status: "error", message: "Google authorization was cancelled or denied." });
-      return;
-    }
-
-    if (!code) {
-      setState({ status: "error", message: "Google did not return an authorization code." });
-      return;
-    }
-
+    let redirectTimer;
     connectYouTubeAccount(code)
-      .then((message) => {
-        setState({ status: "success", message: message || "YouTube account connected successfully." });
-        window.setTimeout(() => navigate("/dashboard", { replace: true }), 1800);
+      .then(() => {
+        setResult({ ok: true, message: "YouTube connected successfully." });
+        redirectTimer = setTimeout(() => navigate("/creator/dashboard", { replace: true }), 1500);
       })
-      .catch((err) => {
-        const responseError = err.response?.data;
-        setState({ status: "error", message: responseError?.message || (typeof responseError === "string" ? responseError : "Unable to connect the YouTube account. Please try again.") });
-      });
-  }, [location.search, navigate]);
-  /* eslint-enable react-hooks/set-state-in-effect */
+      .catch((err) => setResult({ ok: false, message: getErrorMessage(err, "Could not connect YouTube.") }));
 
-  const isLoading = state.status === "loading";
-  const isSuccess = state.status === "success";
+    return () => clearTimeout(redirectTimer);
+  }, [code, oauthError, navigate]);
 
-  return <main className="mx-auto flex min-h-[60vh] max-w-lg items-center justify-center p-4"><section aria-live="polite" className="w-full rounded-2xl border border-slate-200 bg-white p-6 text-center shadow-sm sm:p-8"><div className={`mx-auto flex size-12 items-center justify-center rounded-full ${isSuccess ? "bg-emerald-100 text-emerald-600" : state.status === "error" ? "bg-red-100 text-red-600" : "bg-red-50 text-red-600"}`}>{isLoading ? <LoaderCircle className="size-6 animate-spin" /> : isSuccess ? <CheckCircle2 className="size-6" /> : <CircleAlert className="size-6" />}</div><Video className="mx-auto mt-5 size-6 text-red-600" /><h1 className="mt-3 text-xl font-bold text-slate-900">{isSuccess ? "YouTube connected" : state.status === "error" ? "Connection failed" : "Connecting YouTube"}</h1><p className="mt-2 text-sm leading-6 text-slate-600">{state.message}</p>{state.status === "error" && <button type="button" onClick={() => navigate("/dashboard", { replace: true })} className="mt-6 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700">Back to dashboard</button>}</section></main>;
+  const failure = oauthError
+    ? `Google returned an error: ${oauthError}`
+    : !code
+      ? "No authorization code was received from Google."
+      : result && !result.ok
+        ? result.message
+        : null;
+
+  return (
+    <div className="flex min-h-[60vh] items-center justify-center p-8">
+      <div className="w-full max-w-md rounded-lg border border-gray-200 bg-white p-8 text-center shadow-sm">
+        {failure ? (
+          <>
+            <XCircle className="mx-auto mb-3 h-10 w-10 text-red-500" />
+            <h1 className="mb-2 text-xl font-semibold">YouTube connection failed</h1>
+            <p className="mb-6 text-sm text-gray-600">{failure}</p>
+            <Link to="/creator/dashboard" className="text-sm text-indigo-600 hover:underline">
+              Back to dashboard
+            </Link>
+          </>
+        ) : result?.ok ? (
+          <>
+            <CheckCircle2 className="mx-auto mb-3 h-10 w-10 text-green-500" />
+            <h1 className="mb-2 text-xl font-semibold">YouTube connected</h1>
+            <p className="text-sm text-gray-600">Taking you back to your dashboard…</p>
+          </>
+        ) : (
+          <>
+            <Loader2 className="mx-auto mb-3 h-10 w-10 animate-spin text-gray-400" />
+            <h1 className="text-xl font-semibold">Connecting YouTube…</h1>
+          </>
+        )}
+      </div>
+    </div>
+  );
 }
