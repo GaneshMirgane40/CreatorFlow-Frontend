@@ -30,6 +30,31 @@ export async function assignEditor(projectId, editorId) {
   return response.data;
 }
 
+export async function uploadSourceVideo(projectId, video, onProgress) {
+  const formData = new FormData();
+  formData.append("video", video);
+  const response = await axios.post(`/projects/${projectId}/source-video`, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+    timeout: 0,
+    onUploadProgress: (event) => {
+      if (onProgress && event.total) onProgress(Math.round((event.loaded / event.total) * 100));
+    },
+  });
+  return response.data;
+}
+
+export async function fetchSourceVideo(projectId, { signal, onProgress } = {}) {
+  const response = await axios.get(`/projects/${projectId}/source-video`, {
+    responseType: "blob",
+    timeout: 0,
+    signal,
+    onDownloadProgress: (event) => {
+      if (onProgress && event.total) onProgress(Math.round((event.loaded / event.total) * 100));
+    },
+  });
+  return response.data;
+}
+
 export async function getEditorProjects() {
   const response = await axios.get('/projects/editor');
   return response.data;
@@ -90,11 +115,10 @@ export async function getLatestSubmission(projectId) {
  * `videoUrl` is the API-relative path returned in the submission response.
  */
 export async function fetchSubmissionVideo(videoUrl, { signal, onProgress } = {}) {
-  const baseUrl = axios.defaults.baseURL;
-  const requestUrl = videoUrl.startsWith("http")
-    ? videoUrl
-    : new URL(videoUrl, `${baseUrl.replace(/\/$/, "")}/`).toString();
-  const response = await axios.get(requestUrl, {
+  // Keep API-relative paths such as /projects/:id/submissions/:id/video
+  // relative to axios.baseURL (/api). Converting them with URL() would drop
+  // that prefix and incorrectly request /projects/... from the server root.
+  const response = await axios.get(videoUrl, {
     responseType: 'blob',
     timeout: 0,
     signal,

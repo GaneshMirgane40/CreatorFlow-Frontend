@@ -6,6 +6,7 @@ import { useAuth } from "@/context/AuthContext";
 import useAsync from "@/hooks/useAsync";
 import StatusBadge from "@/components/StatusBadge";
 import SubmissionVideo from "@/components/SubmissionVideo";
+import SourceVideo from "@/components/SourceVideo";
 import VideoUploadForm from "@/components/VideoUploadForm";
 import {
   getLatestSubmission,
@@ -97,8 +98,13 @@ export default function ProjectDetails() {
     if (ok) setFeedback("");
   };
 
-  const handlePublish = () =>
-    runAction("publish", () => publishProject(project.id), "Published to YouTube");
+  const handlePublish = () => {
+    if (!youtube?.connected) {
+      toast.error("Connect your YouTube account before publishing.");
+      return;
+    }
+    return runAction("publish", () => publishProject(project.id), "Published to YouTube");
+  };
 
   const handleConnectYouTube = async () => {
     try {
@@ -143,6 +149,12 @@ export default function ProjectDetails() {
         </dl>
       </Section>
 
+      {project.sourceVideoAvailable && (
+        <Section title="Source video from creator">
+          <SourceVideo projectId={project.id} />
+        </Section>
+      )}
+
       {/* Editor actions */}
       {(canStartWork || canUpload) && (
         <Section title="Your next step">
@@ -169,7 +181,7 @@ export default function ProjectDetails() {
 
       {/* Latest submission */}
       <Section title={submission ? `Latest submission · v${submission.version}` : "Submission"}>
-        <SubmissionVideo submission={submission} />
+        <SubmissionVideo submission={submission} projectId={project.id} />
       </Section>
 
       {/* Creator review */}

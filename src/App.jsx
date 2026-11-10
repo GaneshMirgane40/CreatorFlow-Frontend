@@ -11,6 +11,7 @@ import ProjectDetails from "@/pages/ProjectDetails";
 import CreatorReview from "@/pages/CreatorReview";
 import EditorProjects from "@/pages/EditorProjects";
 import YouTubeCallback from "@/pages/YouTubeCallback";
+import YouTubeConnect from "@/pages/YouTubeConnect";
 import DashboardLayout from "@/layouts/DashboardLayout";
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
               <Route path="/projects" element={<Projects />} />
               <Route path="/projects/:projectId" element={<ProjectDetails />} />
               <Route path="/review" element={<CreatorReview />} />
+              <Route path="/youtube/connect" element={<YouTubeConnect />} />
               {/* Must match spring.security.oauth2.client.registration.google.redirect-uri */}
               <Route path="/youtube/callback" element={<YouTubeCallback />} />
             </Route>

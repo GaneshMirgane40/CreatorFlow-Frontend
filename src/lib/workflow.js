@@ -1,14 +1,14 @@
 // Shared helpers for project statuses, dates and API error messages.
 
 export const STATUS_META = {
-  PENDING: { label: "Pending", className: "bg-gray-100 text-gray-700" },
-  IN_PROGRESS: { label: "In Progress", className: "bg-blue-100 text-blue-700" },
+  PENDING: { label: "Pending", className: "border-[#f1d7d5] bg-[#fff7f5] text-[#8b4a57]" },
+  IN_PROGRESS: { label: "In Progress", className: "border-[#d9eafc] bg-[#edf5ff] text-[#1f5bb8]" },
   // Legacy value still present in the backend enum
-  REVIEW: { label: "In Review", className: "bg-amber-100 text-amber-800" },
-  UNDER_REVIEW: { label: "Under Review", className: "bg-amber-100 text-amber-800" },
-  REVIEW_REQUESTED: { label: "Changes Requested", className: "bg-orange-100 text-orange-800" },
-  APPROVED: { label: "Approved", className: "bg-green-100 text-green-700" },
-  PUBLISHED: { label: "Published", className: "bg-purple-100 text-purple-700" },
+  REVIEW: { label: "In Review", className: "border-[#f8e8c7] bg-[#fff6df] text-[#9a6a00]" },
+  UNDER_REVIEW: { label: "Under Review", className: "border-[#f8e8c7] bg-[#fff6df] text-[#9a6a00]" },
+  REVIEW_REQUESTED: { label: "Changes Requested", className: "border-[#f7d9c9] bg-[#fff2ea] text-[#b85627]" },
+  APPROVED: { label: "Approved", className: "border-[#d9efdd] bg-[#eefaf1] text-[#227a4d]" },
+  PUBLISHED: { label: "Published", className: "border-[#e8dcff] bg-[#f4efff] text-[#6a4ec9]" },
 };
 
 export function statusLabel(status) {

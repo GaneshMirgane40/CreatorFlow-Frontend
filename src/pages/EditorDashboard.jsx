@@ -23,8 +23,13 @@ export default function EditorDashboard() {
   const todo = projects.filter((p) => NEEDS_ACTION.includes(p.status));
 
   return (
-    <div className="space-y-6 p-4 sm:p-8">
-      <h1 className="text-3xl font-bold">Editor Dashboard</h1>
+    <div className="space-y-6 p-2 sm:p-4 lg:p-6">
+      <div className="flex items-center justify-between gap-4">
+        <div>
+          <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#c81e3f]">Overview</p>
+          <h1 className="mt-2 text-3xl font-bold tracking-tight text-slate-900">Editor Dashboard</h1>
+        </div>
+      </div>
 
       <div className="grid grid-cols-2 gap-4 md:grid-cols-5">
         <StatCard label="Assigned" value={stats.assignedProjects} />
@@ -34,10 +39,10 @@ export default function EditorDashboard() {
         <StatCard label="Approved" value={stats.approved} accent="text-green-600" />
       </div>
 
-      <section className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-        <div className="mb-2 flex items-center justify-between">
-          <h2 className="text-lg font-semibold">Needs your attention</h2>
-          <Link to="/editor/projects" className="text-sm text-indigo-600 hover:underline">All projects</Link>
+      <section className="rounded-3xl border border-[#f2e3dd] bg-white/85 p-6 shadow-[0_18px_40px_rgba(148,108,92,0.08)] backdrop-blur-sm">
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-slate-900">Needs your attention</h2>
+          <Link to="/editor/projects" className="text-sm font-medium text-[#c81e3f] hover:text-[#a31833]">All projects</Link>
         </div>
         <ProjectList
           projects={todo}

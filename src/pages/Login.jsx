@@ -33,18 +33,13 @@ export default function Login() {
         password,
       });
 
-      // Save authentication data
       loginUser(response.token, response.role);
 
-      console.log("Login Successful");
-
-      // Redirect based on role
       if (response.role === "CREATOR") {
         navigate("/creator/dashboard");
       } else {
         navigate("/editor/dashboard");
       }
-
     } catch (error) {
       console.error(error.response?.data || error.message);
       alert("Invalid email or password");
@@ -54,86 +49,71 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 px-4 sm:px-6 lg:px-8">
+    <div className="flex min-h-screen items-center justify-center bg-[radial-gradient(circle_at_top_left,_rgba(255,153,170,0.22),_transparent_30%),linear-gradient(135deg,_#fffaf7_0%,_#f4efe9_50%,_#f1e7df_100%)] px-4 py-10 sm:px-6 lg:px-8">
       <div className="w-full max-w-md">
-        {/* Logo Section */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl sm:text-5xl font-bold text-white mb-2">
-            CreatorFlow
-          </h1>
-          <p className="text-slate-400 text-sm">Manage your creative projects</p>
+        <div className="mb-8 text-center">
+          <div className="mb-4 flex items-center justify-center gap-3">
+            <div className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-[#ff5a64] to-[#d50a2f] ring-4 ring-[#ffe5ea] shadow-lg shadow-[#f6d3d8]">
+              <img src="/creatorflow-logo.svg" alt="CreatorFlow" className="h-10 w-10 object-cover" />
+            </div>
+          </div>
+          <h1 className="mb-2 text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">CreatorFlow</h1>
+          <p className="text-sm text-slate-600">Create, review, and publish with clarity.</p>
         </div>
 
-        {/* Login Card */}
-        <Card className="border-slate-700 bg-slate-800/50 backdrop-blur transition-all duration-300 hover:shadow-2xl hover:shadow-blue-900/20">
+        <Card className="border-[#f2e2dd] bg-white/80 backdrop-blur-xl shadow-[0_20px_60px_rgba(148,108,92,0.12)] ring-1 ring-[#f6e4dc]">
           <CardHeader>
-            <CardTitle className="text-2xl text-white">Welcome Back</CardTitle>
-            <CardDescription className="text-slate-400">
-              Sign in to continue managing your projects.
-            </CardDescription>
+            <CardTitle className="text-2xl text-slate-900">Welcome back</CardTitle>
+            <CardDescription className="text-slate-600">Sign in to continue managing your projects.</CardDescription>
           </CardHeader>
 
           <CardContent className="space-y-6">
             <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Email Field */}
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-slate-200">
-                  Email
-                </Label>
+                <Label htmlFor="email" className="text-slate-700">Email</Label>
                 <Input
                   id="email"
                   type="email"
                   placeholder="you@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="bg-slate-700/50 border-slate-600 text-white placeholder:text-slate-500 focus:border-blue-500 focus:ring-blue-500"
+                  className="border-[#f0d8d0] bg-[#fffaf7] text-slate-900 placeholder:text-slate-400 focus:border-[#ff7d92] focus:ring-[#ffd6de]"
                 />
               </div>
 
-              {/* Password Field */}
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-slate-200">
-                  Password
-                </Label>
+                <Label htmlFor="password" className="text-slate-700">Password</Label>
                 <Input
                   id="password"
                   type="password"
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="bg-slate-700/50 border-slate-600 text-white placeholder:text-slate-500 focus:border-blue-500 focus:ring-blue-500"
+                  className="border-[#f0d8d0] bg-[#fffaf7] text-slate-900 placeholder:text-slate-400 focus:border-[#ff7d92] focus:ring-[#ffd6de]"
                 />
               </div>
 
-              {/* Login Button */}
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 h-10"
+                className="h-11 w-full bg-gradient-to-r from-[#ff5a64] to-[#d50a2f] text-white shadow-md shadow-[#f2c3cb] hover:brightness-105"
               >
                 {loading ? "Signing In..." : "Sign In"}
               </Button>
             </form>
           </CardContent>
 
-          {/* Footer */}
-          <CardFooter className="flex flex-col space-y-4 border-t border-slate-700 pt-6">
-            <p className="text-slate-400 text-sm text-center w-full">
-              Don't have an account?{" "}
-              <Link
-                to="/register"
-                className="text-blue-500 hover:text-blue-400 font-medium transition-colors"
-              >
+          <CardFooter className="flex flex-col space-y-4 border-t border-[#f4e7e2] pt-6">
+            <p className="w-full text-center text-sm text-slate-600">
+              Don’t have an account?{" "}
+              <Link to="/register" className="font-semibold text-[#c81e3f] transition-colors hover:text-[#a31833]">
                 Register
               </Link>
             </p>
           </CardFooter>
         </Card>
 
-        {/* Footer Text */}
-        <p className="text-center text-slate-500 text-xs mt-8">
-          © {new Date().getFullYear()} CreatorFlow. All rights reserved.
-        </p>
+        <p className="mt-8 text-center text-xs text-slate-500">© {new Date().getFullYear()} CreatorFlow. All rights reserved.</p>
       </div>
     </div>
   );

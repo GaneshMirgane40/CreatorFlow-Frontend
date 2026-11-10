@@ -37,22 +37,27 @@ export default function CreatorDashboard() {
   const awaitingReview = projects.filter((p) => p.status === "UNDER_REVIEW");
 
   return (
-    <div className="space-y-6 p-4 sm:p-8">
-      <h1 className="text-3xl font-bold">Creator Dashboard</h1>
+    <div className="space-y-6 p-2 sm:p-4 lg:p-6">
+      <div className="flex items-center justify-between gap-4">
+        <div>
+          <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#c81e3f]">Overview</p>
+          <h1 className="mt-2 text-3xl font-bold tracking-tight text-slate-900">Creator Dashboard</h1>
+        </div>
+      </div>
 
       <div className="grid grid-cols-2 gap-4 md:grid-cols-5">
         <StatCard label="Total projects" value={stats.totalProjects} />
-        <StatCard label="Pending" value={stats.pending} />
+        <StatCard label="Pending" value={stats.pending} accent="text-[#eb6a6a]" />
         <StatCard label="In review" value={stats.underReview} accent="text-amber-600" />
         <StatCard label="Approved" value={stats.approved} accent="text-green-600" />
-        <StatCard label="Published" value={stats.published} accent="text-purple-600" />
+        <StatCard label="Published" value={stats.published} accent="text-violet-600" />
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        <section className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm lg:col-span-2">
-          <div className="mb-2 flex items-center justify-between">
-            <h2 className="text-lg font-semibold">Recent projects</h2>
-            <Link to="/projects" className="text-sm text-indigo-600 hover:underline">View all</Link>
+        <section className="rounded-3xl border border-[#f2e3dd] bg-white/85 p-6 shadow-[0_18px_40px_rgba(148,108,92,0.08)] backdrop-blur-sm lg:col-span-2">
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="text-lg font-semibold text-slate-900">Recent projects</h2>
+            <Link to="/projects" className="text-sm font-medium text-[#c81e3f] hover:text-[#a31833]">View all</Link>
           </div>
           <ProjectList
             projects={recent}
@@ -62,13 +67,13 @@ export default function CreatorDashboard() {
         </section>
 
         <div className="space-y-6">
-          <section className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-            <h2 className="mb-4 text-lg font-semibold">Quick actions</h2>
+          <section id="youtube" className="rounded-3xl border border-[#f2e3dd] bg-white/85 p-6 shadow-[0_18px_40px_rgba(148,108,92,0.08)] backdrop-blur-sm">
+            <h2 className="mb-4 text-lg font-semibold text-slate-900">Quick actions</h2>
             <div className="flex flex-col gap-2">
-              <Link to="/projects" className="inline-flex items-center gap-2 rounded px-3 py-2 text-sm hover:bg-gray-50">
-                <FolderPlus className="h-4 w-4 text-indigo-600" /> Create or manage projects
+              <Link to="/projects" className="inline-flex items-center gap-2 rounded-2xl px-3 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-[#fff7f5]">
+                <FolderPlus className="h-4 w-4 text-[#c81e3f]" /> Create or manage projects
               </Link>
-              <Link to="/review" className="inline-flex items-center gap-2 rounded px-3 py-2 text-sm hover:bg-gray-50">
+              <Link to="/review" className="inline-flex items-center gap-2 rounded-2xl px-3 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-[#fff7f5]">
                 <ClipboardCheck className="h-4 w-4 text-amber-600" />
                 Review queue
                 {awaitingReview.length > 0 && (
@@ -80,21 +85,21 @@ export default function CreatorDashboard() {
             </div>
           </section>
 
-          <section className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-            <h2 className="mb-2 text-lg font-semibold">YouTube</h2>
+          <section className="rounded-3xl border border-[#f2e3dd] bg-white/85 p-6 shadow-[0_18px_40px_rgba(148,108,92,0.08)] backdrop-blur-sm">
+            <h2 className="mb-2 text-lg font-semibold text-slate-900">YouTube</h2>
             {youtube?.connected ? (
-              <p className="text-sm text-gray-700">
-                Connected to <span className="font-medium">{youtube.channelTitle}</span>.
+              <p className="text-sm text-slate-700">
+                Connected to <span className="font-medium text-slate-900">{youtube.channelTitle}</span>.
               </p>
             ) : (
               <>
-                <p className="mb-4 text-sm text-gray-600">
+                <p className="mb-4 text-sm text-slate-600">
                   Connect your channel to publish approved videos directly.
                 </p>
                 <button
                   type="button"
                   onClick={handleConnectYouTube}
-                  className="inline-flex items-center gap-2 rounded bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700"
+                  className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#ff5a64] to-[#d50a2f] px-4 py-2.5 text-sm font-medium text-white shadow-sm shadow-[#f2c3cb] hover:brightness-105"
                 >
                   <MonitorPlay className="h-4 w-4" /> Connect YouTube Account
                 </button>

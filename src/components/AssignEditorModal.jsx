@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { getAllEditors } from '@/services/userService';
-import { assignEditor } from '@/services/projectService';
+import { assignEditor, uploadSourceVideo } from '@/services/projectService';
 
 export default function AssignEditorModal({ open, project, onClose, onEditorAssigned }) {
   const [editors, setEditors] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedEditorId, setSelectedEditorId] = useState('');
+  const [sourceVideo, setSourceVideo] = useState(null);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -33,6 +34,7 @@ export default function AssignEditorModal({ open, project, onClose, onEditorAssi
   const handleClose = () => {
     setEditors([]);
     setSelectedEditorId('');
+    setSourceVideo(null);
     setError(null);
     onClose();
   };
@@ -49,6 +51,9 @@ export default function AssignEditorModal({ open, project, onClose, onEditorAssi
     try {
       setLoading(true);
         await assignEditor(project.id, Number(selectedEditorId));
+        if (sourceVideo) {
+          await uploadSourceVideo(project.id, sourceVideo);
+        }
 
         await onEditorAssigned?.();
       handleClose();
@@ -88,6 +93,18 @@ export default function AssignEditorModal({ open, project, onClose, onEditorAssi
                 ))}
               </select>
             )}
+          </div>
+
+          <div className="mb-6">
+            <label className="block text-sm font-semibold mb-2">Raw video for the editor</label>
+            <input
+              type="file"
+              accept="video/*"
+              onChange={(event) => setSourceVideo(event.target.files?.[0] || null)}
+              disabled={loading}
+              className="w-full text-sm text-gray-600"
+            />
+            <p className="mt-1 text-xs text-gray-500">Optional. The assigned editor can securely preview this source video.</p>
           </div>
 
           <div className="flex gap-4">

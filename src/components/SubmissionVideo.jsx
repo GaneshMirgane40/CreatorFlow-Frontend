@@ -10,9 +10,12 @@ import { formatDate, getErrorMessage } from "@/lib/workflow";
  * so the file is fetched through axios as a Blob and played from an object URL.
  * The same object URL backs the Download button, so the file is fetched once.
  */
-export default function SubmissionVideo({ submission }) {
-  // The backend has used both names across submission response versions.
-  const videoUrl = submission?.videoUrl || submission?.videoPath;
+export default function SubmissionVideo({ submission, projectId }) {
+  // Submission responses contain a filesystem videoPath. Playback must use the
+  // authenticated streaming endpoint instead of exposing that server-side path.
+  const videoUrl = submission?.submissionId && projectId
+    ? `/projects/${projectId}/submissions/${submission.submissionId}/video`
+    : submission?.videoUrl;
   const [attempt, setAttempt] = useState(0);
   const [state, setState] = useState({ forUrl: null, objectUrl: null, error: null });
   const [progress, setProgress] = useState(null);
